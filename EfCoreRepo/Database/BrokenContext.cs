@@ -1,7 +1,20 @@
-﻿namespace EfCoreRepo.Database
+﻿using System;
+using EfCoreRepo.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace EfCoreRepo.Database
 {
-    public class BrokenContext
+    public class BrokenContext : DbContext
     {
+        public DbSet<BrokenModel> PeopleB { get; set; }
         
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            var database = Environment.GetEnvironmentVariable("PG_DATABASE");
+            var user = Environment.GetEnvironmentVariable("PG_USER");
+            var password = Environment.GetEnvironmentVariable("PG_PASSWORD");
+            optionsBuilder.UseNpgsql($"host=localhost;database={database};user id={user};password={password};");
+            base.OnConfiguring(optionsBuilder);
+        }
     }
 }
